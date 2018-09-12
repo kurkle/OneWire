@@ -121,7 +121,7 @@
 #undef CS_END
 #define CS_START()                       {portMUX_TYPE mux = portMUX_INITIALIZER_UNLOCKED;portENTER_CRITICAL(&mux)
 #define CS_END()                         portEXIT_CRITICAL(&mux);}
-#warning "ESP32 OneWire testing"
+//#warning "ESP32 OneWire testing"
 
 #elif defined(__SAMD21G18A__)
 #define PIN_TO_BASEREG(pin)             portModeRegister(digitalPinToPort(pin))
