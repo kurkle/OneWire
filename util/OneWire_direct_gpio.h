@@ -1,14 +1,11 @@
 #ifndef OneWire_Direct_GPIO_h
 #define OneWire_Direct_GPIO_h
 
-#include <inttypes.h>
+// This header should ONLY be included by OneWire.cpp.  These defines are
+// meant to be private, used within OneWire.cpp, but not exposed to Arduino
+// sketches or other libraries which may include OneWire.h.
 
-#if ARDUINO >= 100
-#include "Arduino.h"       // for delayMicroseconds, digitalPinToBitMask, etc
-#else
-#include "WProgram.h"      // for delayMicroseconds
-#include "pins_arduino.h"  // for digitalPinToBitMask, etc
-#endif
+#include <stdint.h>
 
 // Generic defaults
 #define CS_START()                      noInterrupts();
@@ -115,13 +112,11 @@
 #define DIRECT_MODE_OUTPUT(base, mask)   (base ? (GPIO.enable_w1ts = (mask)) : (GPIO.enable1_w1ts.val = (mask)))
 #define DIRECT_WRITE_LOW(base, mask)     (base ? (GPIO.out_w1tc = (mask)) : (GPIO.out1_w1tc.val = (mask)))
 #define DIRECT_WRITE_HIGH(base, mask)    (base ? (GPIO.out_w1ts = (mask)) : (GPIO.out1_w1ts.val = (mask)))
-// https://github.com/PaulStoffregen/OneWire/pull/47
-// https://github.com/stickbreaker/OneWire/commit/6eb7fc1c11a15b6ac8c60e5671cf36eb6829f82c
+
 #undef CS_START
 #undef CS_END
 #define CS_START()                       {portMUX_TYPE mux = portMUX_INITIALIZER_UNLOCKED;portENTER_CRITICAL(&mux)
 #define CS_END()                         portEXIT_CRITICAL(&mux);}
-//#warning "ESP32 OneWire testing"
 
 #elif defined(__SAMD21G18A__)
 #define PIN_TO_BASEREG(pin)             portModeRegister(digitalPinToPort(pin))

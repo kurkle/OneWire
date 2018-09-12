@@ -1,14 +1,16 @@
 #ifndef OneWire_h
 #define OneWire_h
 
-#include <inttypes.h>
+#ifdef __cplusplus
+
+#include <stdint.h>
 
 #if defined(__AVR__)
 #include <util/crc16.h>
 #endif
 
 #if ARDUINO >= 100
-#include "Arduino.h"       // for delayMicroseconds, digitalPinToBitMask, etc
+#include <Arduino.h>       // for delayMicroseconds, digitalPinToBitMask, etc
 #else
 #include "WProgram.h"      // for delayMicroseconds
 #include "pins_arduino.h"  // for digitalPinToBitMask, etc
@@ -49,13 +51,6 @@
 #define ONEWIRE_CRC16 1
 #endif
 
-#ifndef FALSE
-#define FALSE 0
-#endif
-#ifndef TRUE
-#define TRUE  1
-#endif
-
 // Board-specific macros for direct GPIO
 #include "util/OneWire_direct_gpio.h"
 
@@ -70,11 +65,12 @@ class OneWire
     unsigned char ROM_NO[8];
     uint8_t LastDiscrepancy;
     uint8_t LastFamilyDiscrepancy;
-    uint8_t LastDeviceFlag;
+    bool LastDeviceFlag;
 #endif
 
   public:
-    OneWire( uint8_t pin);
+    OneWire(uint8_t pin) { begin(pin); }
+    void begin(uint8_t pin);
 
     // Perform a 1-Wire reset cycle. Returns 1 if a device responds
     // with a presence pulse.  Returns 0 if there is no device or the
@@ -128,7 +124,7 @@ class OneWire
     // might be a good idea to check the CRC to make sure you didn't
     // get garbage.  The order is deterministic. You will always get
     // the same devices in the same order.
-    uint8_t search(uint8_t *newAddr, bool search_mode = true);
+    bool search(uint8_t *newAddr, bool search_mode = true);
 #endif
 
 #if ONEWIRE_CRC
@@ -191,4 +187,6 @@ class OneWire
 #undef DIRECT_WRITE_HIGH
 #undef CS_START
 #undef CS_END
-#endif
+
+#endif // __cplusplus
+#endif // OneWire_h
